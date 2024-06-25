@@ -1,30 +1,14 @@
 // Import required modules
 const express = require('express');
-const mysql = require('mysql');
+const bodyParser = require('body-parser'); // Middleware for parsing JSON requests
+const database = require('./database'); // Import database connection
 
 // Create an Express application
 const app = express();
 const port = 3000; // Port number for your server
 
-// MySQL Connection
-const connection = mysql.createConnection({
-    host: 'localhost', // MySQL host
-    user: 'root', // MySQL username
-    password: 'your_password', // MySQL password
-    database: 'your_database' // MySQL database name
-});
-
-// Connect to MySQL
-connection.connect(err => {
-    if (err) {
-        console.error('Error connecting to MySQL: ' + err.stack);
-        return;
-    }
-    console.log('Connected to MySQL as id ' + connection.threadId);
-});
-
-// Middleware to parse JSON requests
-app.use(express.json());
+// Middleware setup
+app.use(bodyParser.json()); // Parse JSON request bodies
 
 // Error handler middleware
 function errorHandler(err, req, res, next) {
@@ -38,7 +22,7 @@ function errorHandler(err, req, res, next) {
 app.post('/api/users/signup', (req, res, next) => {
     const { Name, Email, Password, Phone, Address, DateOfBirth, Gender } = req.body;
     const newUser = { Name, Email, Password, Phone, Address, DateOfBirth, Gender };
-    connection.query('INSERT INTO Users SET ?', newUser, (error, results) => {
+    database.query('INSERT INTO Users SET ?', newUser, (error, results) => {
         if (error) {
             return next(error);
         }
@@ -49,7 +33,7 @@ app.post('/api/users/signup', (req, res, next) => {
 // Login: Authenticate and login a user
 app.post('/api/users/login', (req, res, next) => {
     const { Email, Password } = req.body;
-    connection.query('SELECT * FROM Users WHERE Email = ? AND Password = ?', [Email, Password], (error, results) => {
+    database.query('SELECT * FROM Users WHERE Email = ? AND Password = ?', [Email, Password], (error, results) => {
         if (error) {
             return next(error);
         }
@@ -65,7 +49,7 @@ app.post('/api/users/login', (req, res, next) => {
 // User Profile: Retrieve user profile information
 app.get('/api/users/:userID', (req, res, next) => {
     const userID = req.params.userID;
-    connection.query('SELECT * FROM Users WHERE UserID = ?', [userID], (error, results) => {
+    database.query('SELECT * FROM Users WHERE UserID = ?', [userID], (error, results) => {
         if (error) {
             return next(error);
         }
@@ -81,7 +65,7 @@ app.get('/api/users/:userID', (req, res, next) => {
 app.put('/api/users/:userID', (req, res, next) => {
     const userID = req.params.userID;
     const updatedUser = req.body;
-    connection.query('UPDATE Users SET ? WHERE UserID = ?', [updatedUser, userID], (error, results) => {
+    database.query('UPDATE Users SET ? WHERE UserID = ?', [updatedUser, userID], (error, results) => {
         if (error) {
             return next(error);
         }
@@ -96,7 +80,7 @@ app.put('/api/users/:userID', (req, res, next) => {
 // Delete user account (optional)
 app.delete('/api/users/:userID', (req, res, next) => {
     const userID = req.params.userID;
-    connection.query('DELETE FROM Users WHERE UserID = ?', [userID], (error, results) => {
+    database.query('DELETE FROM Users WHERE UserID = ?', [userID], (error, results) => {
         if (error) {
             return next(error);
         }
@@ -112,7 +96,7 @@ app.delete('/api/users/:userID', (req, res, next) => {
 
 // Product Listing: Get a list of all products
 app.get('/api/products', (req, res, next) => {
-    connection.query('SELECT * FROM Products', (error, results) => {
+    database.query('SELECT * FROM Products', (error, results) => {
         if (error) {
             return next(error);
         }
@@ -123,7 +107,7 @@ app.get('/api/products', (req, res, next) => {
 // Get details of a specific product
 app.get('/api/products/:productID', (req, res, next) => {
     const productID = req.params.productID;
-    connection.query('SELECT * FROM Products WHERE ProductID = ?', [productID], (error, results) => {
+    database.query('SELECT * FROM Products WHERE ProductID = ?', [productID], (error, results) => {
         if (error) {
             return next(error);
         }
@@ -138,7 +122,7 @@ app.get('/api/products/:productID', (req, res, next) => {
 // Product Search: Search products by keyword
 app.get('/api/products/search', (req, res, next) => {
     const { query } = req.query;
-    connection.query('SELECT * FROM Products WHERE ProductName LIKE ?', [`%${query}%`], (error, results) => {
+    database.query('SELECT * FROM Products WHERE ProductName LIKE ?', [`%${query}%`], (error, results) => {
         if (error) {
             return next(error);
         }
@@ -150,7 +134,7 @@ app.get('/api/products/search', (req, res, next) => {
 
 // Categories Listing: Get a list of all categories
 app.get('/api/categories', (req, res, next) => {
-    connection.query('SELECT * FROM Categories', (error, results) => {
+    database.query('SELECT * FROM Categories', (error, results) => {
         if (error) {
             return next(error);
         }
@@ -161,7 +145,7 @@ app.get('/api/categories', (req, res, next) => {
 // Get details of a specific category
 app.get('/api/categories/:categoryID', (req, res, next) => {
     const categoryID = req.params.categoryID;
-    connection.query('SELECT * FROM Categories WHERE CategoryID = ?', [categoryID], (error, results) => {
+    database.query('SELECT * FROM Categories WHERE CategoryID = ?', [categoryID], (error, results) => {
         if (error) {
             return next(error);
         }
@@ -177,7 +161,7 @@ app.get('/api/categories/:categoryID', (req, res, next) => {
 
 // Brands Listing: Get a list of all brands
 app.get('/api/brands', (req, res, next) => {
-    connection.query('SELECT * FROM Brands', (error, results) => {
+    database.query('SELECT * FROM Brands', (error, results) => {
         if (error) {
             return next(error);
         }
@@ -188,7 +172,7 @@ app.get('/api/brands', (req, res, next) => {
 // Get details of a specific brand
 app.get('/api/brands/:brandID', (req, res, next) => {
     const brandID = req.params.brandID;
-    connection.query('SELECT * FROM Brands WHERE BrandID = ?', [brandID], (error, results) => {
+    database.query('SELECT * FROM Brands WHERE BrandID = ?', [brandID], (error, results) => {
         if (error) {
             return next(error);
         }
