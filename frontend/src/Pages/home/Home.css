@@ -1,0 +1,140 @@
+.thumbs {
+  display: none;
+}
+.carousel.carousel-slider .control-arrow {
+  background-color: rgba(0, 0, 0, 0.182);
+}
+.HomeCarousel {
+  padding-top: 8%;
+  padding-left: 17%;
+  padding-right: 18%;
+  width: 100%;
+}
+.homeCategories {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  padding-left: 5%;
+}
+.homeNav {
+  display: none;
+}
+.homeColors {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 5rem;
+  border-radius: 100px;
+  padding-left: 5%;
+}
+.homeCategories > div img {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 10%;
+}
+.homeNav > div img {
+  width: 80%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.homeColors > div img {
+  width: 80%;
+  height: 100%;
+  margin: 0;
+  padding: 10%;
+}
+.homeHeader {
+  font-weight: 600;
+  font-size: 29px;
+  letter-spacing: 5px;
+  margin: 3rem 0 3rem 3rem;
+  word-spacing: 2px;
+  color: rgb(54, 54, 54);
+}
+@media (max-width: 1200px) {
+  .homeHeader {
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: 4px;
+    margin: 2rem 0 2rem 2rem;
+    word-spacing: 1px;
+  }
+  .homeColors {
+    margin-bottom: 3rem;
+  }
+}
+@media (max-width: 1000px) {
+  .homeHeader {
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin: 1.5rem;
+  }
+  .homeColors {
+    margin-bottom: 3rem;
+  }
+  .HomeCarousel {
+    margin-bottom: -1rem;
+  }
+}
+@media (max-width: 920px) {
+  .HomeCarousel {
+    padding-top: 3rem;
+    margin-bottom: -1rem;
+  }
+}
+@media (max-width: 800px) {
+  .homeHeader {
+    font-size: 18px;
+    letter-spacing: 1px;
+    margin: 2rem 0 1.2 1.2;
+  }
+  .HomeCarousel {
+    padding-top: 2rem; /* Further reduce padding for smaller screens */
+    margin-bottom: -1rem; /* Adjust margin if needed */
+  }
+  .homeCategories {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .homeColors {
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 2rem;
+  }
+}
+@media (max-width: 520px) {
+  .HomeCarousel {
+    padding-top: 1.5rem; /* Adjust padding for smaller screens */
+    margin-bottom: -1.5rem; /* Further adjust margin if needed */
+  }
+  .homeHeader {
+    font-size: 14px;
+    letter-spacing: 0px;
+    margin: 0.5rem;
+  }
+  .homeCategories {
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 1.6rem;
+  }
+  .homeColors {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 1.5rem;
+  }
+}
+@media (max-width: 440px) {
+  .HomeCarousel {
+    display: none;
+  }
+  .homeNav {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 3.7rem 0 2px 0;
+    background-color: rgb(236, 236, 236);
+  }
+  .homeHeader {
+    font-size: 12px;
+  }
+}
+@media (max-width: 320px) {
+  .homeNav {
+    padding: 3.2rem 0 0 0;
+  }
+}
