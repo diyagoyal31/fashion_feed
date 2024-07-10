@@ -152,6 +152,61 @@ app.post('/categories', (req, res) => {
         res.status(201).json({ message: 'Category added successfully', categoryID: result.insertId });
     });
 });
+// Fetch all brands
+app.get('/brands', (req, res) => {
+    db.query('SELECT * FROM Brands', (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query error' });
+        }
+
+        res.json(results);
+    });
+});
+
+// Add a new brand
+app.post('/brands', (req, res) => {
+    const { brandName, type } = req.body;
+
+    const newBrand = {
+        BrandName: brandName,
+        Type: type
+    };
+
+    db.query('INSERT INTO Brands SET ?', newBrand, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database insertion error' });
+        }
+
+        res.status(201).json({ message: 'Brand added successfully', brandID: result.insertId });
+    });
+});
+// Fetch all products
+app.get('/products', (req, res) => {
+    db.query('SELECT * FROM Products', (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query error' });
+        }
+
+        res.json(results);
+    });
+});
+
+// Add a new product
+app.post('/products', (req, res) => {
+    const { productName, categoryID, brandID, price, description, size, stockQuantity, image } = req.body;
+
+    const newProduct = {
+        ProductName: productName,
+        CategoryID: categoryID,
+        BrandID: brandID,
+        Price: price,
+        Description: description,
+        Size: size,
+        StockQuantity: stockQuantity,
+        Image: image
+    };
+
+    db.query('INSERT INTO Products SET
 
 // Start the server
 const PORT = process.env.PORT || 3000;
