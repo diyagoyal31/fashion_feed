@@ -192,8 +192,13 @@ app.get('/products', (req, res) => {
 });
 
 // Add a new product
+// Add a new product
 app.post('/products', (req, res) => {
     const { productName, categoryID, brandID, price, description, size, stockQuantity, image } = req.body;
+
+    if (!productName || !price) {
+        return res.status(400).json({ error: 'Product name and price are required' });
+    }
 
     const newProduct = {
         ProductName: productName,
@@ -206,7 +211,15 @@ app.post('/products', (req, res) => {
         Image: image
     };
 
-    db.query('INSERT INTO Products SET
+    db.query('INSERT INTO Products SET ?', newProduct, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database insertion error' });
+        }
+
+        res.status(201).json({ message: 'Product added successfully', productID: result.insertId });
+    });
+});
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;
