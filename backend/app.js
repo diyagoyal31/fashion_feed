@@ -165,11 +165,15 @@ app.get('/brands', (req, res) => {
 
 // Add a new brand
 app.post('/brands', (req, res) => {
-    const { BrandName, Type } = req.body;
+    const { brandName, type } = req.body;
+
+    if (!brandName || !type) {
+        return res.status(400).json({ error: 'BrandName and Type are required' });
+    }
 
     const newBrand = {
-        BrandName: BrandName,
-        Type: Type
+        BrandName: brandName,
+        Type: type
     };
 
     db.query('INSERT INTO Brands SET ?', newBrand, (err, result) => {
@@ -180,6 +184,7 @@ app.post('/brands', (req, res) => {
         res.status(201).json({ message: 'Brand added successfully', brandID: result.insertId });
     });
 });
+
 // Fetch all products
 app.get('/products', (req, res) => {
     db.query('SELECT * FROM Products', (err, results) => {
