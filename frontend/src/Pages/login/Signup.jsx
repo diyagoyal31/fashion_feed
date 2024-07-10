@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "./Signup.css";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../../Redux/auth/action";
+import axios from "axios"; // Import Axios
 import { message } from "antd";
 
 const Signup = () => {
@@ -17,52 +16,34 @@ const Signup = () => {
   });
 
   const [messageApi, contextHolder] = message.useMessage();
-  const dispatch = useDispatch();
-  const auth = useSelector((store) => store.auth);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (
-      formData.name.trim() !== "" &&
-      formData.email.trim() !== "" &&
-      formData.password.trim() !== "" &&
-      formData.phone.trim() !== "" &&
-      formData.address.trim() !== "" &&
-      formData.dateOfBirth &&
-      formData.gender.trim() !== ""
-    ) {
-      if (
-        formData.name.trim().length < 4 ||
-        formData.password.trim().length < 4
-      ) {
-        messageApi.error("Name and password must be at least 4 characters");
+
+    try {
+      const response = await axios.post("http://localhost:3000/signup", formData);
+
+      if (response.status === 201) {
+        messageApi.success(response.data.message);
+        // Optionally redirect user after successful registration
+        // window.location.href = '/'; // Example redirect
       } else {
-        dispatch(registerUser(formData));
+        messageApi.error(response.data.error || "Registration failed");
       }
-    } else {
-      messageApi.error("Please enter all required fields");
+    } catch (error) {
+      console.error("Error during signup:", error);
+      messageApi.error("Server error during registration");
     }
   };
-
-  if (auth.data.isAuthenticated) {
-    messageApi.success("User registered successfully");
-    // Redirect user after successful registration
-    // You can use Navigate component from react-router-dom here if needed
-    // return <Navigate to="/" />;
-  }
 
   return (
     <div className="signup">
       <div className="signupContainer">
-        <div className="signupImage">
-          <img src="./assets/signup.png" alt="signup" />
-        </div>
         <div className="signupDetail">
           <div>
             <h3>Signup</h3>
@@ -126,7 +107,7 @@ const Signup = () => {
               </p>
               <button type="submit">
                 {contextHolder}
-                {auth.userRegister.loading ? "Loading" : "CONTINUE"}
+                CONTINUE
               </button>
             </form>
           </div>
