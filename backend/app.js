@@ -52,6 +52,107 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+// Login route
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    db.query('SELECT * FROM Users WHERE Email = ?', [email], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+
+        const user = results[0];
+
+        bcrypt.compare(password, user.Password, (err, isMatch) => {
+            if (err) {
+                return res.status(500).json({ error: 'Password comparison error' });
+            }
+
+            if (!isMatch) {
+                return res.status(401).json({ error: 'Invalid email or password' });
+            }
+
+            res.json({ message: 'Login successful', userID: user.UserID });
+        });
+    });
+});
+
+// Fetch user details route
+app.get('/user/:id', (req, res) => {
+    const userID = req.params.id;
+
+    db.query('SELECT * FROM Users WHERE UserID = ?', [userID], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json(results[0]);
+    });
+});
+
+// Update user profile route
+app.put('/user/:id', (req, res) => {
+    const userID = req.params.id;
+    const { name, phone, address, dateOfBirth, gender } = req.body;
+
+    const updatedUser = {
+        Name: name,
+        Phone: phone,
+        Address: address,
+        DateOfBirth: dateOfBirth,
+        Gender: gender
+    };
+
+    db.query('UPDATE Users SET ? WHERE UserID = ?', [updatedUser, userID], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database update error' });
+        }
+
+        res.json({ message: 'User profile updated successfully' });
+    });
+});
+
+// Fetch all categories
+app.get('/categories', (req, res) => {
+    db.query('SELECT * FROM Categories', (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query error' });
+        }
+
+        res.json(results);
+    });
+});
+
+// Add a new category
+app.post('/categories', (req, res) => {
+    const { categoryName, description } = req.body;
+
+    const newCategory = {
+        CategoryName: categoryName,
+        Description: description
+    };
+
+    db.query('INSERT INTO Categories SET ?', newCategory, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database insertion error' });
+        }
+
+        res.status(201).json({ message: 'Category added successfully', categoryID: result.insertId });
+    });
+});
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
