@@ -165,11 +165,11 @@ app.get('/brands', (req, res) => {
 
 // Add a new brand
 app.post('/brands', (req, res) => {
-    const { brandName, type } = req.body;
+    const { BrandName, Type } = req.body;
 
     const newBrand = {
-        BrandName: brandName,
-        Type: type
+        BrandName: BrandName,
+        Type: Type
     };
 
     db.query('INSERT INTO Brands SET ?', newBrand, (err, result) => {
