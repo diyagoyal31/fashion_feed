@@ -38,7 +38,7 @@ const Footer = () => {
               <Link to="/signup">Sign Up</Link>
             </li>
             <li>
-              <Link to="/bitmoji-moodboard">Bitmoji Moodboard</Link>
+              <Link to="/moodboard">Outfit Moodboard</Link>
             </li>
             <li>
               <Link to="/your-myntra-feed">Your Myntra Feed</Link>

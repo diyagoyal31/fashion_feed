@@ -92,7 +92,7 @@ const Navbar = () => {
                 className="menuItem"
                 onClick={() => handleClick("moodboard")}
               >
-                <Link to={`/bitmoji-moodboard`}>Bitmoji Moodboard</Link>
+                <Link to={`/moodboard`}>Outfit Moodboard</Link>
               </li>
               <li
                 className="menuItem"
