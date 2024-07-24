@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./Signup.css";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"; 
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../../Redux/auth/action";
 import { message } from "antd";
 
 const Signup = () => {
@@ -16,34 +17,52 @@ const Signup = () => {
   });
 
   const [messageApi, contextHolder] = message.useMessage();
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const auth = useSelector((store) => store.auth);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
+
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-
-    try {
-      const response = await axios.post("http://localhost:3000/signup", formData);
-
-      if (response.status === 201) {
-        messageApi.success(response.data.message);
-        navigate("/profile"); // Redirect to profile page
+    if (
+      formData.name.trim() !== "" &&
+      formData.email.trim() !== "" &&
+      formData.password.trim() !== "" &&
+      formData.phone.trim() !== "" &&
+      formData.address.trim() !== "" &&
+      formData.dateOfBirth &&
+      formData.gender.trim() !== ""
+    ) {
+      if (
+        formData.name.trim().length < 4 ||
+        formData.password.trim().length < 4
+      ) {
+        messageApi.error("Name and password must be at least 4 characters");
       } else {
-        messageApi.error(response.data.error || "Registration failed");
+        dispatch(registerUser(formData));
       }
-    } catch (error) {
-      console.error("Error during signup:", error);
-      messageApi.error("Server error during registration");
+    } else {
+      messageApi.error("Please enter all required fields");
     }
   };
+
+  if (auth.data.isAuthenticated) {
+    messageApi.success("User registered successfully");
+    // Redirect user after successful registration
+    // You can use Navigate component from react-router-dom here if needed
+    // return <Navigate to="/" />;
+  }
 
   return (
     <div className="signup">
       <div className="signupContainer">
+        <div className="signupImage">
+          <img src="./assets/signup.png" alt="signup" />
+        </div>
         <div className="signupDetail">
           <div>
             <h3>Signup</h3>
@@ -107,7 +126,7 @@ const Signup = () => {
               </p>
               <button type="submit">
                 {contextHolder}
-                CONTINUE
+                {auth.userRegister.loading ? "Loading" : "CONTINUE"}
               </button>
             </form>
           </div>
