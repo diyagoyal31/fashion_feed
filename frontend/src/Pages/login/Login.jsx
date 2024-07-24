@@ -12,17 +12,24 @@ const Login = () => {
   });
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const auth = useSelector((store) => store.auth);
-  console.log(auth);
-  // const navigate = useNavigate();
+
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleFormSubmit = (e) => {
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    dispatch(authLogin(formData));
+    try {
+      await dispatch(authLogin(formData));
+      messageApi.success("Login successful!");
+      navigate("/profile"); // Redirect to profile page
+    } catch (error) {
+      messageApi.error("Login failed. Please try again.");
+    }
   };
+
   return (
     <div className="login">
       <div className="loginContainer">
@@ -50,7 +57,7 @@ const Login = () => {
                 placeholder="Set a password"
               />
               <p>
-                New User ? <Link to="/signup">Signup .</Link>
+                New User? <Link to="/signup">Signup</Link>
               </p>
               <button type="submit">
                 {contextHolder}

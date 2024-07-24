@@ -98,7 +98,7 @@ const Navbar = () => {
                 className="menuItem"
                 onClick={() => handleClick("feed")}
               >
-                <Link to={`/your-myntra-feed`}>Your Myntra Feed</Link>
+                <Link to={`/myntrafeed`}>Your Myntra Feed</Link>
               </li>
               <li
                 className="menuItem"

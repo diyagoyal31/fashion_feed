@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Signup.css";
-import { Link } from "react-router-dom";
-import axios from "axios"; // Import Axios
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"; 
 import { message } from "antd";
 
 const Signup = () => {
@@ -16,6 +16,7 @@ const Signup = () => {
   });
 
   const [messageApi, contextHolder] = message.useMessage();
+  const navigate = useNavigate();
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -30,8 +31,7 @@ const Signup = () => {
 
       if (response.status === 201) {
         messageApi.success(response.data.message);
-        // Optionally redirect user after successful registration
-        // window.location.href = '/'; // Example redirect
+        navigate("/profile"); // Redirect to profile page
       } else {
         messageApi.error(response.data.error || "Registration failed");
       }
