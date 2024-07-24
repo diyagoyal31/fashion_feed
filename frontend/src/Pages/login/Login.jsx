@@ -3,7 +3,6 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
-import { authLogin } from "../../Redux/auth/action";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +10,6 @@ const Login = () => {
     password: "",
   });
   const [messageApi, contextHolder] = message.useMessage();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const auth = useSelector((store) => store.auth);
 
@@ -22,11 +20,24 @@ const Login = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(authLogin(formData));
-      messageApi.success("Login successful!");
-      navigate("/profile"); // Redirect to profile page
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        messageApi.success("Login successful!");
+        navigate("/profile"); // Redirect to profile page
+      } else {
+        messageApi.error(result.error || "Login failed. Please try again.");
+      }
     } catch (error) {
-      messageApi.error("Login failed. Please try again.");
+      messageApi.error("An error occurred. Please try again.");
     }
   };
 
