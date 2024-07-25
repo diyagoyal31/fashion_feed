@@ -11,15 +11,15 @@ app.use(cors({
   }));
 // Define the signup route
 app.post('/signup', async (req, res) => {
-    const { name, email, password, phone, address, dateOfBirth, gender } = req.body;
+    const { Name, Email, Password, Phone, Address, DateOfBirth, Gender } = req.body;
 
-    if (!name || !email || !password) {
-        return res.status(400).json({ error: 'Name, email, and password are required' });
+    if (!Name || !Email || !Password) {
+        return res.status(400).json({ error: 'Name, Email, and Password are required' });
     }
 
     try {
         // Check if the email is already taken
-        db.query('SELECT * FROM Users WHERE Email = ?', [email], async (err, results) => {
+        db.query('SELECT * FROM Users WHERE Email = ?', [Email], async (err, results) => {
             if (err) {
                 return res.status(500).json({ error: 'Database query error' });
             }
@@ -29,17 +29,17 @@ app.post('/signup', async (req, res) => {
             }
 
             // Hash the password
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(Password, 10);
 
             // Insert the new user into the database
             const newUser = {
-                Name: name,
-                Email: email,
+                Name: Name,
+                Email: Email,
                 Password: hashedPassword,
-                Phone: phone,
-                Address: address,
-                DateOfBirth: dateOfBirth,
-                Gender: gender
+                Phone: Phone,
+                Address: Address,
+                DateOfBirth: DateOfBirth,
+                Gender: Gender
             };
 
             db.query('INSERT INTO Users SET ?', newUser, (err, result) => {
