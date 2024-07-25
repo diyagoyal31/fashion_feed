@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./Signup.css";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../../Redux/auth/action";
 import { message } from "antd";
 
 const Signup = () => {
@@ -26,36 +25,49 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (
-      formData.name.trim() !== "" &&
-      formData.email.trim() !== "" &&
-      formData.password.trim() !== "" &&
-      formData.phone.trim() !== "" &&
-      formData.address.trim() !== "" &&
-      formData.dateOfBirth &&
-      formData.gender.trim() !== ""
-    ) {
+    try {
       if (
-        formData.name.trim().length < 4 ||
-        formData.password.trim().length < 4
+        formData.name.trim() !== "" &&
+        formData.email.trim() !== "" &&
+        formData.password.trim() !== "" &&
+        formData.phone.trim() !== "" &&
+        formData.address.trim() !== "" &&
+        formData.dateOfBirth &&
+        formData.gender.trim() !== ""
       ) {
-        messageApi.error("Name and password must be at least 4 characters");
+        if (
+          formData.name.trim().length < 4 ||
+          formData.password.trim().length < 4
+        ) {
+          messageApi.error("Name and password must be at least 4 characters");
+        } else {
+          const response = await fetch('http://localhost:5000/signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            messageApi.success("User registered successfully.");
+            // Optionally, you can redirect the user after successful registration
+            // navigate('/login');
+          } else {
+            messageApi.error(result.message || "Registration failed. Please try again.");
+          }
+        }
       } else {
-        dispatch(registerUser(formData));
+        messageApi.error("Please enter all required fields");
       }
-    } else {
-      messageApi.error("Please enter all required fields");
+    } catch (error) {
+      messageApi.error("An error occurred. Please try again.");
     }
   };
-
-  if (auth.data.isAuthenticated) {
-    messageApi.success("User registered successfully");
-    // Redirect user after successful registration
-    // You can use Navigate component from react-router-dom here if needed
-    // return <Navigate to="/" />;
-  }
 
   return (
     <div className="signup">
