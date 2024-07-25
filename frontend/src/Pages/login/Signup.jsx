@@ -1,27 +1,27 @@
 import React, { useState } from "react";
 import "./Signup.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-    address: "",
-    dateOfBirth: "",
-    gender: "",
+    Name: "",
+    Email: "",
+    Password: "",
+    Phone: "",
+    Address: "",
+    DateOfBirth: "",
+    Gender: "",
   });
 
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
   const auth = useSelector((store) => store.auth);
+  const navigate = useNavigate();
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-
     setFormData({ ...formData, [name]: value });
   };
 
@@ -29,17 +29,17 @@ const Signup = () => {
     e.preventDefault();
     try {
       if (
-        formData.name.trim() !== "" &&
-        formData.email.trim() !== "" &&
-        formData.password.trim() !== "" &&
-        formData.phone.trim() !== "" &&
-        formData.address.trim() !== "" &&
-        formData.dateOfBirth &&
-        formData.gender.trim() !== ""
+        formData.Name.trim() !== "" &&
+        formData.Email.trim() !== "" &&
+        formData.Password.trim() !== "" &&
+        formData.Phone.trim() !== "" &&
+        formData.Address.trim() !== "" &&
+        formData.DateOfBirth &&
+        formData.Gender.trim() !== ""
       ) {
         if (
-          formData.name.trim().length < 4 ||
-          formData.password.trim().length < 4
+          formData.Name.trim().length < 4 ||
+          formData.Password.trim().length < 4
         ) {
           messageApi.error("Name and password must be at least 4 characters");
         } else {
@@ -55,8 +55,8 @@ const Signup = () => {
 
           if (response.ok) {
             messageApi.success("User registered successfully.");
-            // Optionally, you can redirect the user after successful registration
-            // navigate('/login');
+            // Redirect user after successful registration
+            navigate('/login'); // Navigate to login page or any other page as needed
           } else {
             messageApi.error(result.message || "Registration failed. Please try again.");
           }
@@ -82,50 +82,50 @@ const Signup = () => {
           <div>
             <form onSubmit={handleFormSubmit}>
               <input
-                name="name"
-                value={formData.name}
+                name="Name"
+                value={formData.Name}
                 onChange={handleFormChange}
                 type="text"
                 placeholder="Full name"
               />
               <input
-                name="email"
-                value={formData.email}
+                name="Email"
+                value={formData.Email}
                 onChange={handleFormChange}
                 type="email"
                 placeholder="Enter email"
               />
               <input
-                name="password"
-                value={formData.password}
+                name="Password"
+                value={formData.Password}
                 onChange={handleFormChange}
                 type="password"
                 placeholder="Set a password"
               />
               <input
-                name="phone"
-                value={formData.phone}
+                name="Phone"
+                value={formData.Phone}
                 onChange={handleFormChange}
                 type="text"
                 placeholder="Phone"
               />
               <textarea
-                name="address"
-                value={formData.address}
+                name="Address"
+                value={formData.Address}
                 onChange={handleFormChange}
                 placeholder="Address"
               />
               <input
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
+                name="DateOfBirth"
+                value={formData.DateOfBirth}
                 onChange={handleFormChange}
                 type="date"
                 max={new Date().toISOString().split("T")[0]} // Sets max date to today
                 placeholder="YYYY-MM-DD"
               />
               <select
-                name="gender"
-                value={formData.gender}
+                name="Gender"
+                value={formData.Gender}
                 onChange={handleFormChange}
               >
                 <option value="">Select Gender</option>
