@@ -6,7 +6,6 @@ import { HiOutlineShoppingBag } from "react-icons/hi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-// import { RiAdminLine } from "react-icons/ri";
 import { Dropdown } from "antd";
 import { authLogout } from "../../Redux/auth/action";
 
@@ -16,6 +15,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const auth = useSelector((store) => store.auth);
   const dispatch = useDispatch();
+
   const handleClick = (param = "", value = "") => {
     setClick(!click);
     if (param === "" || value === "") {
@@ -26,20 +26,18 @@ const Navbar = () => {
       return navigate(`/product?${param}=${value}`);
     }
   };
+
   const handleSearchClick = () => {
     if (keyword.trim()) {
       return navigate(`/product?keyword=${keyword.trim()}`);
     }
   };
-  console.log(auth.data.isAuthenticated)
-  const styleA = { left: "-100%" };
-  const styleB = { left: "0%" };
-  const login = false;
+
   const items = [
     {
       label: auth.data.isAuthenticated ? (
         <div>
-          <h4>Welcome</h4>
+          <h4>Welcome, {auth.data.user.name}</h4>
         </div>
       ) : (
         <div>
@@ -68,6 +66,10 @@ const Navbar = () => {
       key: "1",
     },
   ];
+
+  const styleA = { left: "-100%" };
+  const styleB = { left: "0%" };
+
   return (
     <div className="container">
       <div className="row v-center">
@@ -88,22 +90,13 @@ const Navbar = () => {
                 <Link>SHOP FOR</Link>
                 <MdClose className="cross" onClick={() => handleClick()} />
               </p>
-              <li
-                className="menuItem"
-                onClick={() => handleClick("moodboard")}
-              >
+              <li className="menuItem" onClick={() => handleClick("moodboard")}>
                 <Link to={`/moodboard`}>Outfit Moodboard</Link>
               </li>
-              <li
-                className="menuItem"
-                onClick={() => handleClick("feed")}
-              >
+              <li className="menuItem" onClick={() => handleClick("feed")}>
                 <Link to={`/myntrafeed`}>Your Myntra Feed</Link>
               </li>
-              <li
-                className="menuItem"
-                onClick={() => handleClick("chat")}
-              >
+              <li className="menuItem" onClick={() => handleClick("chat")}>
                 <Link to={`/chat`}>Chat With Mates</Link>
               </li>
               <p className="mobItem" onClick={handleClick}>
@@ -132,15 +125,7 @@ const Navbar = () => {
             <BiSearch className="searchIcon" onClick={handleSearchClick} />
           </div>
         
-          {/* {user === "admin" ? (
-            <div className="navIcons display">
-              <Link to="/admin">
-                <RiAdminLine className="sideIcons" />
-                <p>Admin</p>
-              </Link>
-            </div>
-          ) : null} */}
-           <div className="navIcons">
+          <div className="navIcons">
             <HiOutlineShoppingBag className="sideIcons" />
             <span>1</span>
             <p className="display">Bag</p>

@@ -20,6 +20,8 @@ const Login = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("Sending form data:", formData); // Log the form data being sent
+
       const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
@@ -27,9 +29,10 @@ const Login = () => {
         },
         body: JSON.stringify(formData),
       });
-      
+
       const result = await response.json();
-      
+      console.log("Server response:", result); // Log the server response
+
       if (response.ok) {
         messageApi.success("Login successful!");
         navigate("/profile"); // Redirect to profile page
@@ -37,6 +40,7 @@ const Login = () => {
         messageApi.error(result.error || "Login failed. Please try again.");
       }
     } catch (error) {
+      console.error("Error during login:", error); // Log any errors during the fetch request
       messageApi.error("An error occurred. Please try again.");
     }
   };

@@ -136,10 +136,12 @@ const Signup = () => {
               <p>
                 Already a User? <Link to="/login">Login</Link>.
               </p>
+             
               <button type="submit">
                 {contextHolder}
                 {auth.userRegister.loading ? "Loading" : "CONTINUE"}
               </button>
+              
             </form>
           </div>
         </div>

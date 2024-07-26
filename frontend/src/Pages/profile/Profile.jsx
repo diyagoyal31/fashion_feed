@@ -1,21 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./profile.css";
 import { Modal } from "antd";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const Profile = () => {
+  const navigate = useNavigate();
+  const auth = useSelector((store) => store.auth);
+  const user = auth.data?.user || {}; // Fallback to an empty object if user data is not available
   const [modal2Open, setModal2Open] = useState(false);
-  const { user } = useSelector((store) => store.auth.data);
   const [formData, setFormData] = useState({
-    name: user.name || "",
-    phone: user.phone || "",
-    avatar: "",
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+    dateOfBirth: "",
     gender: "",
-    shipping: user.shipping || "",
   });
+
+  useEffect(() => {
+    if (user && Object.keys(user).length > 0) {
+      setFormData({
+        name: user.name || "",
+        phone: user.phone || "",
+        email: user.email || "",
+        address: user.address || "",
+        dateOfBirth: user.dateOfBirth || "",
+        gender: user.gender || "",
+      });
+    }
+  }, [user]);
+
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     let data = {};
@@ -25,16 +44,16 @@ const Profile = () => {
       }
     }
     console.log(data);
+    // Add logic to update user profile here
   };
 
   return (
     <div className="profile">
       <div className="profileCon">
         <div className="profileImage">
-          
           <p>{user?.email}</p>
           <button onClick={() => setModal2Open(true)}>EDIT PROFILE</button>
-          </div>
+        </div>
         <div className="profileDetails">
           <h3>Profile Details</h3>
           <div>
@@ -92,7 +111,6 @@ const Profile = () => {
                 type="tel"
                 placeholder="Enter phone number"
               />
-              
               <br />
               <textarea
                 name="address"
