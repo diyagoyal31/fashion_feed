@@ -10,23 +10,23 @@ const Profile = () => {
   const user = auth.data?.user || {}; // Fallback to an empty object if user data is not available
   const [modal2Open, setModal2Open] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    dateOfBirth: "",
-    gender: "",
+    Name: "",
+    Phone: "",
+    Email: "",
+    Address: "",
+    DateOfBirth: "",
+    Gender: "",
   });
 
   useEffect(() => {
     if (user && Object.keys(user).length > 0) {
       setFormData({
-        name: user.name || "",
-        phone: user.phone || "",
-        email: user.email || "",
-        address: user.address || "",
-        dateOfBirth: user.dateOfBirth || "",
-        gender: user.gender || "",
+        Name: user.name || "",
+        Phone: user.phone || "",
+        Email: user.email || "",
+        Address: user.address || "",
+        DateOfBirth: user.dateOfBirth || "",
+        Gender: user.gender || "",
       });
     }
   }, [user]);
@@ -46,6 +46,17 @@ const Profile = () => {
     console.log(data);
     // Add logic to update user profile here
   };
+
+  // Redirect to login if not authenticated
+  if (!auth.data.isAuthenticated) {
+    return (
+      <div className="profile">
+        <div className="profileCon">
+          <p>Please login/signup to view your profile.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="profile">
@@ -89,53 +100,52 @@ const Profile = () => {
           >
             <form onSubmit={handleFormSubmit}>
               <input
-                name="name"
-                value={formData.name}
+                name="Name"
+                value={formData.Name}
                 onChange={handleFormChange}
                 type="text"
                 placeholder="Full name"
               />
               <br />
               <input
-                name="email"
-                value={formData.email}
+                name="Email"
+                value={formData.Email}
                 onChange={handleFormChange}
                 type="email"
                 placeholder="Email"
               />
               <br />
               <input
-                name="phone"
-                value={formData.phone}
+                name="Phone"
+                value={formData.Phone}
                 onChange={handleFormChange}
                 type="tel"
                 placeholder="Enter phone number"
               />
               <br />
               <textarea
-                name="address"
-                value={formData.address}
+                name="Address"
+                value={formData.Address}
                 onChange={handleFormChange}
                 placeholder="Address"
               />
               <br />
               <input
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
+                name="DateOfBirth"
+                value={formData.DateOfBirth}
                 onChange={handleFormChange}
                 type="date"
                 max={new Date().toISOString().split("T")[0]} // Sets max date to today
               />
               <br />
-              <select name="gender" value={formData.gender} onChange={handleFormChange}>
+              <select name="Gender" value={formData.Gender} onChange={handleFormChange}>
                 <option value="">Select gender</option>
                 <option value="M">Male</option>
                 <option value="F">Female</option>
                 <option value="O">Other</option>
               </select>
               <br />
-              <button type="button" onClick={() => setModal2Open(false)}>Cancel</button>
-              <button type="submit">Save</button>
+              <button type="submit">Save Changes</button>
             </form>
           </Modal>
         </div>

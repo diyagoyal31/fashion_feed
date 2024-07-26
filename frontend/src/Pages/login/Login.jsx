@@ -35,7 +35,7 @@ const Login = () => {
 
       if (response.ok) {
         messageApi.success("Login successful!");
-        navigate("/profile"); // Redirect to profile page
+        navigate("/"); // Redirect to profile page
       } else {
         messageApi.error(result.error || "Login failed. Please try again.");
       }

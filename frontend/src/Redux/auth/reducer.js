@@ -1,8 +1,11 @@
+// src/Redux/auth/reducer.js
 import * as types from "./types";
+
 const TOKEN = localStorage.getItem("token");
 const initialState = {
   userLogin: { loading: false, error: false, message: "" },
   userRegister: { loading: false, error: false, message: "" },
+  userUpdate: { loading: false, error: false, message: "" },
   data: {
     isAuthenticated: !!TOKEN,
     token: TOKEN,
@@ -18,7 +21,6 @@ export function authReducer(state = initialState, { type, payload }) {
         userLogin: { loading: true, error: false },
       };
     case types.LOGIN_USER_SUCCESS:
-      localStorage.setItem("token", payload.token);
       return {
         ...state,
         userLogin: { loading: false, error: false, message: payload.message },
@@ -31,18 +33,7 @@ export function authReducer(state = initialState, { type, payload }) {
     case types.LOGIN_USER_ERROR:
       return {
         ...state,
-        userLogin: { loading: false, error: true, message: "Error" },
-      };
-
-    case types.AUTH_LOGOUT:
-      localStorage.removeItem("token");
-      return {
-        ...state,
-        data: {
-          isAuthenticated: false,
-          token: null,
-          user: null,
-        },
+        userLogin: { loading: false, error: true, message: payload.message },
       };
 
     case types.REGISTER_USER_REQUEST:
@@ -51,7 +42,6 @@ export function authReducer(state = initialState, { type, payload }) {
         userRegister: { loading: true, error: false },
       };
     case types.REGISTER_USER_SUCCESS:
-      localStorage.setItem("token", payload.token);
       return {
         ...state,
         userRegister: {
@@ -68,8 +58,39 @@ export function authReducer(state = initialState, { type, payload }) {
     case types.REGISTER_USER_ERROR:
       return {
         ...state,
-        userRegister: { loading: false, error: true, message: "Error" },
+        userRegister: { loading: false, error: true, message: payload.message },
       };
+
+    case types.UPDATE_USER_REQUEST:
+      return {
+        ...state,
+        userUpdate: { loading: true, error: false },
+      };
+    case types.UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        userUpdate: { loading: false, error: false, message: payload.message },
+        data: {
+          ...state.data,
+          user: payload.user,
+        },
+      };
+    case types.UPDATE_USER_ERROR:
+      return {
+        ...state,
+        userUpdate: { loading: false, error: true, message: payload.message },
+      };
+
+    case types.AUTH_LOGOUT:
+      return {
+        ...state,
+        data: {
+          isAuthenticated: false,
+          token: null,
+          user: null,
+        },
+      };
+
     default:
       return state;
   }

@@ -1,84 +1,87 @@
+// src/Redux/auth/action.js
 import * as types from "./types";
 import axios from "axios";
 
-//Register User
+// Register User
 export const registerUser = (userData) => async (dispatch) => {
   try {
     dispatch({ type: types.REGISTER_USER_REQUEST });
-    const data = await axios.post(
+    const response = await axios.post(
       `https://busy-rose-earthworm-cap.cyclic.app/user/new`,
       userData
     );
-    console.log(data.data);
     dispatch({
       type: types.REGISTER_USER_SUCCESS,
       payload: {
-        token: data.data.token,
-        message: data.data.message,
-        user: data.data.user,
+        token: response.data.token,
+        message: response.data.message,
+        user: response.data.user,
       },
     });
   } catch (error) {
     dispatch({
       type: types.REGISTER_USER_ERROR,
+      payload: { message: error.message },
     });
   }
 };
 
-// export const editUser = (userData, id) => async (dispatch) => {
-//   try {
-//     dispatch({ type: types.UPDATE_USER_REQUEST });
-//     const data = await axios.put(
-//       `https://busy-rose-earthworm-cap.cyclic.app/user/update?id=${id}`,
-//       userData
-//     );
-//     console.log(data.data);
-//     dispatch({
-//       type: types.UPDATE_USER_SUCCESS,
-//       payload: {
-//         token: data.data.token,
-//         message: data.data.message,
-//         user: data.data.user,
-//       },
-//     });
-//   } catch (error) {
-//     dispatch({
-//       type: types.UPDATE_USER_ERROR,
-//     });
-//   }
-// };
-
+// Login User
 export const authLogin = (data) => async (dispatch) => {
   try {
     dispatch({ type: types.LOGIN_USER_REQUEST });
-
-    const res = await axios.post(
+    const response = await axios.post(
       "https://busy-rose-earthworm-cap.cyclic.app/user/login",
       data
     );
-    console.log(res);
-    localStorage.setItem("user", JSON.stringify(res.data.user));
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
     dispatch({
       type: types.LOGIN_USER_SUCCESS,
       payload: {
-        token: res.data.token,
-        message: res.data.message,
-        user: res.data.user,
+        token: response.data.token,
+        message: response.data.message,
+        user: response.data.user,
       },
     });
   } catch (error) {
     dispatch({
       type: types.LOGIN_USER_ERROR,
+      payload: { message: error.message },
     });
   }
 };
 
-export const authLogout = () => async (dispatch) => {
+// Edit User
+export const editUser = (userData, id) => async (dispatch) => {
   try {
+    dispatch({ type: types.UPDATE_USER_REQUEST });
+    const response = await axios.put(
+      `https://busy-rose-earthworm-cap.cyclic.app/user/update?id=${id}`,
+      userData
+    );
+    localStorage.setItem("token", response.data.token);
     dispatch({
-      type: types.AUTH_LOGOUT,
+      type: types.UPDATE_USER_SUCCESS,
+      payload: {
+        token: response.data.token,
+        message: response.data.message,
+        user: response.data.user,
+      },
     });
   } catch (error) {
-    console.log(error);
+    dispatch({
+      type: types.UPDATE_USER_ERROR,
+      payload: { message: error.message },
+    });
   }
+};
+
+// Logout
+export const authLogout = () => (dispatch) => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  dispatch({
+    type: types.AUTH_LOGOUT,
+  });
 };

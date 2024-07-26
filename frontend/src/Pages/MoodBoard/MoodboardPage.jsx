@@ -61,77 +61,9 @@ const MoodboardPage = () => {
             </main>
 
             <section className="product-section">
-                <aside className="filter-sidebar">
-                    <h2 className="filter-title">Filter/Sort</h2>
-                    <div className="price-range">
-                        <span className="price-label">Price</span>
-                        <div className="price-value">
-                            <span className="price-currency">₹</span>
-                            <span className="price-amount">{priceRange[0]}-{priceRange[1]}</span>
-                        </div>
-                    </div>
-                    <input
-                        type="range"
-                        min="0"
-                        max="1000"
-                        step="10"
-                        value={priceRange[0]}
-                        onChange={e => handlePriceChange({ target: { min: e.target.value, max: priceRange[1] } })}
-                        className="price-slider"
-                    />
-                    <input
-                        type="range"
-                        min="0"
-                        max="1000"
-                        step="10"
-                        value={priceRange[1]}
-                        onChange={e => handlePriceChange({ target: { min: priceRange[0], max: e.target.value } })}
-                        className="price-slider"
-                    />
-
-                    <h3 className="filter-category">Color</h3>
-                    <div className="filter-option">
-                        <input type="checkbox" id="color-black" className="filter-checkbox" />
-                        <label htmlFor="color-black" className="filter-label">Black</label>
-                    </div>
-                    <div className="filter-option">
-                        <input type="checkbox" id="color-green" className="filter-checkbox" />
-                        <label htmlFor="color-green" className="filter-label">Green</label>
-                    </div>
-                    <div className="filter-option">
-                        <input type="checkbox" id="color-white" className="filter-checkbox" />
-                        <label htmlFor="color-white" className="filter-label">White</label>
-                    </div>
-
-                    <h3 className="filter-category">Size</h3>
-                    <div className="filter-option">
-                        <input type="checkbox" id="size-xs" className="filter-checkbox" />
-                        <label htmlFor="size-xs" className="filter-label">XS</label>
-                    </div>
-                    <div className="filter-option">
-                        <input type="checkbox" id="size-s" className="filter-checkbox" />
-                        <label htmlFor="size-s" className="filter-label">S</label>
-                    </div>
-                    <div className="filter-option">
-                        <input type="checkbox" id="size-m" className="filter-checkbox" />
-                        <label htmlFor="size-m" className="filter-label">M</label>
-                    </div>
-                </aside>
+               
                 <div className="product-grid">
-                    <div className="product-controls">
-                        <div className="search-products">
-                            <input type="text" className="search-products-text" placeholder="Search" />
-                            <img src="/assets/search.webp" className="search-products-icon" alt="Search" />
-                        </div>
-                        <div className="sort-options">
-                            <div className="sort-new">
-                                <span>New</span>
-                            </div>
-                            <div className="sort-option">Price ascending</div>
-                            <div className="sort-option">Price descending</div>
-                            <div className="sort-option">Rating</div>
-                        </div>
-                    </div>
+                   
                     <div className="product-list">
                         {products.map((product) => (
                             <div
