@@ -85,3 +85,9 @@ export const authLogout = () => (dispatch) => {
     type: types.AUTH_LOGOUT,
   });
 };
+export const ADD_TO_MOODBOARD = "ADD_TO_MOODBOARD";
+
+export const addToMoodboard = (product) => ({
+  type: ADD_TO_MOODBOARD,
+  payload: product,
+});

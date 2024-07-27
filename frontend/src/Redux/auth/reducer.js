@@ -1,8 +1,10 @@
 // src/Redux/auth/reducer.js
 import * as types from "./types";
+import { ADD_TO_MOODBOARD } from "./types";
 
 const TOKEN = localStorage.getItem("token");
 const initialState = {
+  moodboardItems: [],
   userLogin: { loading: false, error: false, message: "" },
   userRegister: { loading: false, error: false, message: "" },
   userUpdate: { loading: false, error: false, message: "" },
@@ -90,7 +92,12 @@ export function authReducer(state = initialState, { type, payload }) {
           user: null,
         },
       };
-
+      
+        case ADD_TO_MOODBOARD:
+          return {
+            ...state,
+            moodboardItems: [...state.moodboardItems, payload],
+          };
     default:
       return state;
   }

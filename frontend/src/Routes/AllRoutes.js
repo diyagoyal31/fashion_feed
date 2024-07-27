@@ -11,6 +11,9 @@ import FeedProfile from "../Pages/Myntrafeed/FeedProfile";
 import { ImageProvider } from "../Pages/Myntrafeed/ImageContext"
 import Admin from "../Pages/admin/Admin";
 import Profile from "../Pages/profile/Profile";
+import Product from "../Pages/product/Product";
+import SingleProduct from "../Pages/product/SingleProduct";
+
 
 
 const AllRoutes = () => {
@@ -27,6 +30,8 @@ const AllRoutes = () => {
         <Route path="/feedprofile" element={<FeedProfile />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/product" element={<Product />} />
+        <Route path="/product/:id" element={<SingleProduct />} />
       </Routes>
       </ImageProvider>
       <Footer />

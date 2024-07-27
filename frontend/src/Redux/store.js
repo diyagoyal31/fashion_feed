@@ -16,6 +16,7 @@ const rootReducer = combineReducers({
   products: productReducer,
   carts: cartReducer,
   orders: orderReducer,
+  
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
