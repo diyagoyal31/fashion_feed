@@ -69,6 +69,35 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+// Middleware to verify token
+const authenticateToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+
+  if (!token) return res.sendStatus(403);
+
+  jwt.verify(token, 'your_jwt_secret', (err, user) => {
+      if (err) return res.sendStatus(403);
+      req.user = user;
+      next();
+  });
+};
+
+// Profile route to get user information
+app.get('/profile', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+
+  const query = 'SELECT Name FROM Users WHERE UserID = ?';
+  db.query(query, [userId], (err, results) => {
+      if (err) throw err;
+
+      if (results.length > 0) {
+          const user = results[0];
+          res.json({ name: user.Name });
+      } else {
+          res.status(404).json({ message: 'User not found' });
+      }
+  });
+});
 
 // Fetch user details route
 app.get('/user/:id', async (req, res) => {
