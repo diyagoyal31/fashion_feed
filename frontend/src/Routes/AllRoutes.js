@@ -13,7 +13,7 @@ import Admin from "../Pages/admin/Admin";
 import Profile from "../Pages/profile/Profile";
 import Product from "../Pages/product/Product";
 import SingleProduct from "../Pages/product/SingleProduct";
-
+import Chat from "../Pages/Chat/chat";
 
 
 const AllRoutes = () => {
@@ -32,6 +32,8 @@ const AllRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/product" element={<Product />} />
         <Route path="/product/:id" element={<SingleProduct />} />
+        <Route path="/chat" element={<Chat />} />
+
       </Routes>
       </ImageProvider>
       <Footer />

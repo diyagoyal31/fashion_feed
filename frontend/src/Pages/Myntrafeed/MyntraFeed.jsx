@@ -20,7 +20,7 @@ const MyntraFeed = () => {
   };
 
   return (
-    <main className="main-content">
+    <main className="myntramain-content">
       <div className="content-wrapper">
         <div className="content-grid">
           <div className="main-column">

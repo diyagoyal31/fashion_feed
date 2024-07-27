@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import MetaData from '../../Components/MetaData';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './MoodboardPage.css';
-import { useSelector } from 'react-redux';
 
 const products = [
     { id: 1, title: 'Blue top', price: 500, image: '/assets/products/top1.jpg' },
@@ -16,7 +15,6 @@ const products = [
 const MoodboardPage = () => {
     const [priceRange, setPriceRange] = useState([0, 1000]);
     const [selectedProducts, setSelectedProducts] = useState([]);
-    const { moodboard } = useSelector((store) => store.moodboard);
 
     const handlePriceChange = (event) => {
         setPriceRange([+event.target.min, +event.target.max]);
@@ -63,7 +61,9 @@ const MoodboardPage = () => {
             </main>
 
             <section className="product-section">
+                
                 <div className="product-grid">
+                    
                     <div className="product-list">
                         {products.map((product) => (
                             <div

@@ -9,7 +9,7 @@ body {
     background-color: var(--sds-color-background-default-default);
 }
 
-.main-content {
+.myntramain-content {
     border-radius: 59px;
     background-color: var(--sds-color-background-default-default);
     display: flex;
