@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { BiSearch, BiUser, BiHeart } from "react-icons/bi";
@@ -8,31 +8,13 @@ import { MdClose } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Dropdown } from "antd";
 import { authLogout } from "../../Redux/auth/action";
-import axios from 'axios';
 
 const Navbar = () => {
   const [click, setClick] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [userName, setUserName] = useState(null);
   const navigate = useNavigate();
   const auth = useSelector((store) => store.auth);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (auth.data.isAuthenticated) {
-      const token = localStorage.getItem('token');
-      axios.get('http://localhost:5000/profile', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setUserName(response.data.name);
-      })
-      .catch((error) => {
-        console.error(error);
-        setUserName(null);
-      });
-    }
-  }, [auth.data.isAuthenticated]);
 
   const handleClick = (param = "", value = "") => {
     setClick(!click);
@@ -55,7 +37,7 @@ const Navbar = () => {
     {
       label: auth.data.isAuthenticated ? (
         <div>
-          <h4>Welcome, {userName || 'User'}</h4>
+          <h4>Welcome, {auth.data.user.name}</h4>
         </div>
       ) : (
         <div>
