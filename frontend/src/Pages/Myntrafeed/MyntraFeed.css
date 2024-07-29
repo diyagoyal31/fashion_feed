@@ -166,6 +166,7 @@ body {
     display: flex;
     flex-direction: column;
     width: 25%;
+    cursor: pointer;
 }
 
 .grid-image {
@@ -366,3 +367,84 @@ body {
     width: 200px; /* Reduced width for a smaller icon */
     margin-top: 40px; /* Adjusted margin for better spacing */
 }
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+  .modal-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+  
+  .modal-footer {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .like-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  
+  .like-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .like-button.liked .like-icon {
+    color: red;
+  }
+  
+  .like-count,
+  .upload-date {
+    margin-top: 10px;
+    display: block;
+  }
+  .error-message {
+    color: #f44336; /* Red color for error messages */
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .uploaded-by {
+    font-size: 16px;
+    color: #333;
+  }
+    
