@@ -12,16 +12,22 @@ const Footer = () => {
               <Link to="/">Take me home !</Link>
             </li>
             <li>
-              <Link>Men</Link>
+              <Link to="/product?gender=men">Men</Link>
             </li>
             <li>
-              <Link>Women</Link>
+            <Link to="/product?gender=women">Women</Link>
             </li>
             <li>
-              <Link>Kids</Link>
+            <Link to="/product?Kids">Kids</Link>
             </li>
             <li>
-              <Link>Footwear</Link>
+            <Link to="/product?footwear">Footwear</Link>
+            </li>
+            <li>
+              <Link to="/product?jewellery">Jewellery</Link>
+            </li>
+            <li>
+            <Link to="/product?makeup">Makeup</Link>
             </li>
           </ul>
         </div>
@@ -41,7 +47,7 @@ const Footer = () => {
               <Link to="/moodboard">Outfit Moodboard</Link>
             </li>
             <li>
-              <Link to="/your-myntra-feed">Your Myntra Feed</Link>
+              <Link to="/myntrafeed">Your Myntra Feed</Link>
             </li>
             <li>
               <Link to="/chat">Chat With Mates</Link>

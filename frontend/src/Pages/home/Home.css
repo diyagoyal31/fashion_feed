@@ -5,9 +5,9 @@
   background-color: rgba(0, 0, 0, 0.182);
 }
 .HomeCarousel {
-  padding-top: 8%;
-  padding-left: 17%;
-  padding-right: 18%;
+  padding-top: 2%;
+  padding-left: 5%;
+  padding-right: 5%;
   width: 100%;
 }
 .homeCategories {
@@ -27,7 +27,7 @@
 }
 .homeCategories > div img {
   width: 100%;
-  height: 100%;
+  
   margin: 0;
   padding: 10%;
 }
@@ -45,7 +45,7 @@
 }
 .homeHeader {
   font-weight: 600;
-  font-size: 29px;
+  font-size: 40px;
   letter-spacing: 5px;
   margin: 3rem 0 3rem 3rem;
   word-spacing: 2px;
