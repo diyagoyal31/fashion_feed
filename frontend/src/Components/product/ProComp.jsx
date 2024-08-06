@@ -2,8 +2,6 @@ import React from "react";
 import "./ProComp.css";
 import { RiStarSFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addToMoodboard } from "../../Redux/auth/action"; // Adjust import path
 
 const ProComp = ({ product }) => {
   const {
@@ -17,12 +15,6 @@ const ProComp = ({ product }) => {
     discount,
     _id: id,
   } = product;
-
-  const dispatch = useDispatch();
-
-  const handleAddToMoodboard = () => {
-    dispatch(addToMoodboard(product));
-  };
 
   return (
     <div className="itemBox">
@@ -41,7 +33,7 @@ const ProComp = ({ product }) => {
           </div>
         </div>
       </Link>
-      <button onClick={handleAddToMoodboard} className="add-to-moodboard">
+      <button className="add-to-moodboard">
         🧥 Add to Moodboard
       </button>
     </div>

@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProductDetails } from "../../Redux/product/action";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -12,27 +10,34 @@ import { RiStarSFill } from "react-icons/ri";
 import { BiHeart, BiDetail } from "react-icons/bi";
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 
-
 const SingleProduct = () => {
   let { id } = useParams();
   const [proQuantity, setQuantity] = useState(1);
-  const dispatch = useDispatch();
-  const { product, pro_loading: loading } = useSelector(
-    (store) => store.products
-  );
-  let image = [];
-  if (product) {
-    for (let key in product.images) {
-      image.push(product.images[key]);
-    }
-  }
-  useEffect(() => {
-    dispatch(getProductDetails(id));
-  }, [id, dispatch]);
+  const [product, setProduct] = useState({
+    brand: "Sample Brand",
+    title: "Sample Product",
+    rating: 4.5,
+    count: 123,
+    price: 1000,
+    off_price: 1200,
+    discount: 15,
+    stock: 10,
+    description: "This is a sample product description.",
+    color: "Red",
+    size: "M",
+    images: [
+      "/assets/sample1.jpg",
+      "/assets/sample2.jpg",
+      "/assets/sample3.jpg"
+    ]
+  });
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(product.images);
 
   if (loading) {
     return "Loading...";
   }
+
   return (
     <div className="singleProComponent">
       <div className="singleProNavigation">
@@ -45,13 +50,11 @@ const SingleProduct = () => {
       <div className="singlePro">
         <div className="singleProGallery">
           <Swiper pagination={true} modules={[Pagination]} className="mySwiper">
-            {image?.map((e, i) => {
-              return (
-                <SwiperSlide className="swipeImage" key={i}>
-                  <img src={e} alt="images" />
-                </SwiperSlide>
-              );
-            })}
+            {image.map((e, i) => (
+              <SwiperSlide className="swipeImage" key={i}>
+                <img src={e} alt="images" />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
         <div className="singleProDetails">
@@ -87,7 +90,6 @@ const SingleProduct = () => {
               ADD TO BAG
             </button>
             <button className="addToList">
-              {" "}
               <BiHeart className="singleProIcons" />
               WISHLIST
             </button>

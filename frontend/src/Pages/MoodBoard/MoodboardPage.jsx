@@ -61,9 +61,7 @@ const MoodboardPage = () => {
             </main>
 
             <section className="product-section">
-                
                 <div className="product-grid">
-                    
                     <div className="product-list">
                         {products.map((product) => (
                             <div

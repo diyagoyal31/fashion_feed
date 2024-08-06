@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./profile.css";
 import { Modal } from "antd";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const auth = useSelector((store) => store.auth);
-  const user = auth.data?.user || {}; // Fallback to an empty object if user data is not available
   const [modal2Open, setModal2Open] = useState(false);
   const [formData, setFormData] = useState({
     Name: "",
@@ -17,19 +12,12 @@ const Profile = () => {
     DateOfBirth: "",
     Gender: "",
   });
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (user && Object.keys(user).length > 0) {
-      setFormData({
-        Name: user.name || "",
-        Phone: user.phone || "",
-        Email: user.email || "",
-        Address: user.address || "",
-        DateOfBirth: user.dateOfBirth || "",
-        Gender: user.gender || "",
-      });
-    }
-  }, [user]);
+    // Simulate fetching user data
+    // Replace with actual fetch logic if needed
+  }, []);
 
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,18 +25,13 @@ const Profile = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    let data = {};
-    for (let key in formData) {
-      if (formData[key] !== "") {
-        data[key] = formData[key];
-      }
-    }
-    console.log(data);
-    // Add logic to update user profile here
+    // Simulate form submission
+    // Replace with actual update logic if needed
+    setUser(formData);
+    setModal2Open(false);
   };
 
-  // Redirect to login if not authenticated
-  if (!auth.data.isAuthenticated) {
+  if (!user) {
     return (
       <div className="profile">
         <div className="profileCon">
@@ -62,34 +45,34 @@ const Profile = () => {
     <div className="profile">
       <div className="profileCon">
         <div className="profileImage">
-          <p>{user?.email}</p>
+          <p>{user.email}</p>
           <button onClick={() => setModal2Open(true)}>EDIT PROFILE</button>
         </div>
         <div className="profileDetails">
           <h3>Profile Details</h3>
           <div>
             <p>Full Name</p>
-            <p>{user?.name}</p>
+            <p>{user.name}</p>
           </div>
           <div>
             <p>Email</p>
-            <p>{user?.email}</p>
+            <p>{user.email}</p>
           </div>
           <div>
             <p>Mobile Number</p>
-            <p>{user?.phone ? user.phone : "Not added"}</p>
+            <p>{user.phone || "Not added"}</p>
           </div>
           <div>
             <p>Gender</p>
-            <p>{user?.gender ? user.gender : "Not added"}</p>
+            <p>{user.gender || "Not added"}</p>
           </div>
           <div>
             <p>Address</p>
-            <p>{user?.address ? user.address : "Not added"}</p>
+            <p>{user.address || "Not added"}</p>
           </div>
           <div>
             <p>Date of Birth</p>
-            <p>{user?.dateOfBirth ? user.dateOfBirth : "Not added"}</p>
+            <p>{user.dateOfBirth || "Not added"}</p>
           </div>
           <Modal
             title="Edit your personal details"

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./Signup.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
 
 const Signup = () => {
@@ -16,8 +15,6 @@ const Signup = () => {
   });
 
   const [messageApi, contextHolder] = message.useMessage();
-  const dispatch = useDispatch();
-  const auth = useSelector((store) => store.auth);
   const navigate = useNavigate();
 
   const handleFormChange = (e) => {
@@ -25,47 +22,30 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
-    try {
+    if (
+      formData.Name.trim() !== "" &&
+      formData.Email.trim() !== "" &&
+      formData.Password.trim() !== "" &&
+      formData.Phone.trim() !== "" &&
+      formData.Address.trim() !== "" &&
+      formData.DateOfBirth &&
+      formData.Gender.trim() !== ""
+    ) {
       if (
-        formData.Name.trim() !== "" &&
-        formData.Email.trim() !== "" &&
-        formData.Password.trim() !== "" &&
-        formData.Phone.trim() !== "" &&
-        formData.Address.trim() !== "" &&
-        formData.DateOfBirth &&
-        formData.Gender.trim() !== ""
+        formData.Name.trim().length < 4 ||
+        formData.Password.trim().length < 4
       ) {
-        if (
-          formData.Name.trim().length < 4 ||
-          formData.Password.trim().length < 4
-        ) {
-          messageApi.error("Name and password must be at least 4 characters");
-        } else {
-          const response = await fetch('http://localhost:5000/signup', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
-
-          const result = await response.json();
-
-          if (response.ok) {
-            messageApi.success("User registered successfully.");
-            // Redirect user after successful registration
-            navigate('/login'); // Navigate to login page or any other page as needed
-          } else {
-            messageApi.error(result.message || "Registration failed. Please try again.");
-          }
-        }
+        messageApi.error("Name and password must be at least 4 characters");
       } else {
-        messageApi.error("Please enter all required fields");
+        // Simulate a successful signup
+        messageApi.success("User registered successfully.");
+        // Navigate to the login page after successful registration
+        navigate('/login'); // Navigate to login page or any other page as needed
       }
-    } catch (error) {
-      messageApi.error("An error occurred. Please try again.");
+    } else {
+      messageApi.error("Please enter all required fields");
     }
   };
 
@@ -136,12 +116,10 @@ const Signup = () => {
               <p>
                 Already a User? <Link to="/login">Login</Link>.
               </p>
-             
               <button type="submit">
                 {contextHolder}
-                {auth.userRegister.loading ? "Loading" : "CONTINUE"}
+                CONTINUE
               </button>
-              
             </form>
           </div>
         </div>

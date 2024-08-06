@@ -5,34 +5,23 @@ import { BiSearch, BiUser, BiHeart } from "react-icons/bi";
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
 import { Dropdown } from "antd";
-import { authLogout } from "../../Redux/auth/action";
-import axios from 'axios';
 
 const Navbar = () => {
   const [click, setClick] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [userName, setUserName] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simulate authentication state
   const navigate = useNavigate();
-  const auth = useSelector((store) => store.auth);
-  const dispatch = useDispatch();
 
+  // Simulate authentication check
   useEffect(() => {
-    if (auth.data.isAuthenticated) {
-      const token = localStorage.getItem('token');
-      axios.get('http://localhost:5000/profile', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setUserName(response.data.name);
-      })
-      .catch((error) => {
-        console.error(error);
-        setUserName(null);
-      });
-    }
-  }, [auth.data.isAuthenticated]);
+    // Replace with actual auth logic
+    const checkAuth = async () => {
+      // Simulate async call to check authentication
+      setIsLoggedIn(await fakeAuthCheck());
+    };
+    checkAuth();
+  }, []);
 
   const handleClick = (param = "", value = "") => {
     setClick(!click);
@@ -53,11 +42,7 @@ const Navbar = () => {
 
   const items = [
     {
-      label: auth.data.isAuthenticated ? (
-        <div>
-          <h4>Welcome, {userName || 'User'}</h4>
-        </div>
-      ) : (
+      label: (
         <div>
           <h4>Welcome</h4>
         </div>
@@ -65,12 +50,8 @@ const Navbar = () => {
       key: "-1",
     },
     {
-      label: auth.data.isAuthenticated ? (
-        <p onClick={() => dispatch(authLogout())} p="10px">
-          Logout
-        </p>
-      ) : (
-        <Link padding="10px" to="/login">
+      label: (
+        <Link to="/login">
           Login / Signup
         </Link>
       ),
@@ -87,6 +68,16 @@ const Navbar = () => {
 
   const styleA = { left: "-100%" };
   const styleB = { left: "0%" };
+
+  // Simulated backend auth check
+  const fakeAuthCheck = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Simulate user being logged in
+        resolve(true); // Change to false to simulate not logged in
+      }, 1000);
+    });
+  };
 
   return (
     <div className="container">
@@ -117,12 +108,15 @@ const Navbar = () => {
               <li className="menuItem" onClick={() => handleClick("chat")}>
                 <Link to={`/chat`}>Chat With Mates</Link>
               </li>
-              <p className="mobItem" onClick={handleClick}>
-                <Link to="/signup">Login / Signup</Link>
-              </p>
-              <p className="mobItem" onClick={handleClick}>
-                <Link to="/profile">Profile</Link>
-              </p>
+              {!isLoggedIn ? (
+                <p className="mobItem" onClick={handleClick}>
+                  <Link to="/login">Login / Signup</Link>
+                </p>
+              ) : (
+                <p className="mobItem" onClick={handleClick}>
+                  <Link to="/profile">Profile</Link>
+                </p>
+              )}
             </ul>
           </nav>
         </div>
@@ -142,7 +136,7 @@ const Navbar = () => {
             />
             <BiSearch className="searchIcon" onClick={handleSearchClick} />
           </div>
-        
+
           <div className="navIcons">
             <HiOutlineShoppingBag className="sideIcons" />
             <span>1</span>

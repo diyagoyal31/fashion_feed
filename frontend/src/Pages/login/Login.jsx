@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
 
 const Login = () => {
@@ -11,7 +10,6 @@ const Login = () => {
   });
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
-  const auth = useSelector((store) => store.auth);
 
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,30 +17,40 @@ const Login = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    const { email, password } = formData;
+
+    // Basic validation
+    if (!email || !password) {
+      messageApi.error("Please fill in both fields.");
+      return;
+    }
+
     try {
-      console.log("Sending form data:", formData); // Log the form data being sent
-
-      const response = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-      console.log("Server response:", result); // Log the server response
-
-      if (response.ok) {
+      // Simulate a request to your backend for authentication
+      // Replace this with actual API call
+      const response = await fakeAuthRequest(email, password);
+      
+      if (response.success) {
         messageApi.success("Login successful!");
-        navigate("/"); // Redirect to profile page
+        navigate("/"); // Redirect to homepage or other page
       } else {
-        messageApi.error(result.error || "Login failed. Please try again.");
+        messageApi.error("Invalid email or password.");
       }
     } catch (error) {
-      console.error("Error during login:", error); // Log any errors during the fetch request
       messageApi.error("An error occurred. Please try again.");
     }
+  };
+
+  // Simulated backend request function
+  const fakeAuthRequest = (email, password) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Simulate success or failure
+        const success = email === "test@example.com" && password === "password";
+        resolve({ success });
+      }, 1000);
+    });
   };
 
   return (
@@ -58,17 +66,17 @@ const Login = () => {
           <div>
             <form onSubmit={handleFormSubmit}>
               <input
-                name="Email"
-                value={formData.Email}
+                name="email"
+                value={formData.email}
                 onChange={handleFormChange}
-                type="Email"
+                type="email"
                 placeholder="Enter email"
               />
               <input
-                name="Password"
-                value={formData.Password}
+                name="password"
+                value={formData.password}
                 onChange={handleFormChange}
-                type="Password"
+                type="password"
                 placeholder="Set a password"
               />
               <p>
@@ -76,7 +84,7 @@ const Login = () => {
               </p>
               <button type="submit">
                 {contextHolder}
-                {auth.userRegister.loading ? "Loading" : "CONTINUE"}
+                CONTINUE
               </button>
             </form>
           </div>
