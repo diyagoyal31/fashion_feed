@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./profile.css";
-import { Modal } from "antd";
+import { Modal, Button } from "antd";
 
 const Profile = () => {
   const [modal2Open, setModal2Open] = useState(false);
@@ -15,20 +15,45 @@ const Profile = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Simulate fetching user data
-    // Replace with actual fetch logic if needed
+    // Fetch user data from session storage
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+      setFormData(JSON.parse(userData)); // Populate form with user data
+    }
   }, []);
 
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     // Simulate form submission
     // Replace with actual update logic if needed
     setUser(formData);
     setModal2Open(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        sessionStorage.removeItem("user");
+        setUser(null);
+        window.location.href = "/login"; // Redirect to login page
+      } else {
+        console.error("Logout failed.");
+      }
+    } catch (error) {
+      console.error("An error occurred during logout.");
+    }
   };
 
   if (!user) {
@@ -74,6 +99,7 @@ const Profile = () => {
             <p>Date of Birth</p>
             <p>{user.dateOfBirth || "Not added"}</p>
           </div>
+          <Button onClick={handleLogout}>Logout</Button>
           <Modal
             title="Edit your personal details"
             open={modal2Open}

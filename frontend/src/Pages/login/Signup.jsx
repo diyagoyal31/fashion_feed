@@ -22,7 +22,7 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (
       formData.Name.trim() !== "" &&
@@ -39,15 +39,32 @@ const Signup = () => {
       ) {
         messageApi.error("Name and password must be at least 4 characters");
       } else {
-        // Simulate a successful signup
-        messageApi.success("User registered successfully.");
-        // Navigate to the login page after successful registration
-        navigate('/login'); // Navigate to login page or any other page as needed
+        try {
+          const response = await fetch("http://localhost:5000/api/signup", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+  
+          const data = await response.json();
+  
+          if (response.ok) {
+            messageApi.success(data.message);
+            navigate('/login');
+          } else {
+            messageApi.error(data.message);
+          }
+        } catch (error) {
+          messageApi.error("Server error. Please try again later.");
+        }
       }
     } else {
       messageApi.error("Please enter all required fields");
     }
   };
+  
 
   return (
     <div className="signup">

@@ -17,31 +17,39 @@ const Login = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+  
     const { email, password } = formData;
-
-    // Basic validation
+  
     if (!email || !password) {
       messageApi.error("Please fill in both fields.");
       return;
     }
-
+  
     try {
-      // Simulate a request to your backend for authentication
-      // Replace this with actual API call
-      const response = await fakeAuthRequest(email, password);
-      
-      if (response.success) {
-        messageApi.success("Login successful!");
-        navigate("/"); // Redirect to homepage or other page
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ Email: email, Password: password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Store user details in session storage
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+        
+        messageApi.success(data.message);
+        navigate("/"); // Redirect to homepage or another page
       } else {
-        messageApi.error("Invalid email or password.");
+        messageApi.error(data.message);
       }
     } catch (error) {
       messageApi.error("An error occurred. Please try again.");
     }
   };
-
+  
   // Simulated backend request function
   const fakeAuthRequest = (email, password) => {
     return new Promise((resolve) => {
