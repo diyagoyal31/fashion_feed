@@ -13,14 +13,14 @@ const ProComp = ({ product }) => {
     price,
     off_price,
     discount,
-    _id: id,
+    id,
   } = product;
 
   return (
     <div className="itemBox">
       <Link to={`/product/${id}`}>
         <div className="itemImage">
-          <img src={images.image1} alt="ProductImage" />
+          <img src={images[0]} alt={title} />
           <p>
             {rating} <RiStarSFill className="itemStars" /> | {count}
           </p>

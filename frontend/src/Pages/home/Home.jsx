@@ -30,25 +30,25 @@ const Home = () => {
           </Link>
         </div>
         <div>
-          <Link to="/product?Kids" title="KIDS">
+          <Link to="/product?gender=kids" title="KIDS">
             <img src="./assets/navitems/kidsf.webp" alt="" />
             <p>KIDS</p>
           </Link>
         </div>
         <div>
-          <Link to="/product?footwear" title="FOOTWEAR">
+          <Link to="/product?category=footwear" title="FOOTWEAR">
             <img src="./assets/navitems/foot.webp" alt="" />
             <p>FOOTWEAR</p>
           </Link>
         </div>
         <div>
-          <Link to="/product?jewellery" title="JEWELLERY">
+          <Link to="/product?category=jewellery" title="JEWELLERY">
             <img src="./assets/navitems/jewe.webp" alt="" />
             <p>JEWELLERY</p>
           </Link>
         </div>
         <div>
-          <Link to="/product?makeup" title="MAKEUP">
+          <Link to="/product?category=makeup" title="MAKEUP">
             <img src="./assets/navitems/makeup.webp" alt="" />
             <p>MAKEUP</p>
           </Link>
@@ -57,42 +57,42 @@ const Home = () => {
       <p className="homeHeader">SHOP BY CATEGORY</p>
       <div className="homeColors">
         <div>
-          <Link to="/product?shirts" title="SHIRTS">
+          <Link to="/product?category=shirts" title="SHIRTS">
             <img src="./assets/category/Shirts.webp" alt="" />
           </Link>
         </div>
         <div>
-          <Link to="/product?Trousers" title="TROUSERS">
+          <Link to="/product?category=trousers" title="TROUSERS">
             <img src="./assets/category/Trousers.webp" alt="" />
           </Link>
         </div>
         <div>
-          <Link to="/product?TOPS" title="TOPS">
+          <Link to="/product?category=tops" title="TOPS">
             <img src="./assets/category/Tops.webp" alt="" />
           </Link>
         </div>
         <div>
-          <Link to="/product?JEANS" title="JEANS">
+          <Link to="/product?category=jeans" title="JEANS">
             <img src="./assets/category/Jeans.webp" alt="" />
           </Link>
         </div>
         <div>
-          <Link to="/product?DRESSES" title="DRESSES">
+          <Link to="/product?category=dresses" title="DRESSES">
             <img src="./assets/category/Dresses.webp" alt="" />
           </Link>
         </div>
         <div>
-          <Link to="/product?CS" title="CASUAL-SHOES">
+          <Link to="/product?category=casual-shoes" title="CASUAL-SHOES">
             <img src="./assets/category/Casual-Shoes.webp" alt="" />
           </Link>
         </div>
         <div>
-          <Link to="/product?FLOPS" title="FLIPFLOPS">
+          <Link to="/product?category=flops" title="FLIPFLOPS">
             <img src="./assets/category/Flops.webp" alt="" />
           </Link>
         </div>
         <div>
-          <Link to="/product?KURTAS" title="KURTAS">
+          <Link to="/product?category=kurtas" title="KURTAS">
             <img src="./assets/category/Kurtas.webp" alt="" />
           </Link>
         </div>

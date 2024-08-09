@@ -1,124 +1,112 @@
+/* Container for the entire product page */
 .productCon {
   width: 100%;
+
+  
 }
+
+/* Main container for content */
 .proContainer {
   width: 100%;
+  max-width: 1200px;
   margin: auto;
-  padding: 6rem 1.3rem 0.5rem 1.3rem;
-  border-bottom: 1px solid rgb(231, 231, 231);
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden; /* Ensure no content spills out */
 }
+
+/* Navigation text */
 .proNavigation {
   font-size: 14px;
   font-weight: 600;
-  color: rgb(42, 42, 42);
+  color: #333;
+  margin-bottom: 1rem;
 }
+
 .proNavigation span {
-  color: rgb(71, 71, 71);
-  font-weight: 400;
+  color: #777;
 }
+
+/* Count of products displayed */
 .proCount {
   margin: 10px 0;
   font-weight: 600;
-  font-size: 15px;
-  color: rgb(42, 42, 42);
+  font-size: 16px;
+  color: #333;
 }
+
 .proCount span {
   font-weight: 300;
 }
+
+/* Sorting options */
 .proSort {
   display: flex;
-  justify-content: flex-end;
-  color: rgb(42, 42, 42);
-  margin-top: -50px;
-  margin-bottom: 5px;
+  justify-content: space-between;
+  margin-bottom: 1rem;
   align-items: center;
-}
-.proSort > div {
-  display: flex;
-  gap: 10px;
-}
-.proBox {
-  display: flex;
-  width: 100%;
-  overflow-y: auto;
-}
-.proBox::-webkit-scrollbar {
-  display: none;
-}
-.proFilters {
-  /* height: 100vh; */
-  width: 270px;
-  overflow-y: scroll;
-  padding: 1rem;
-}
-.proFilters::-webkit-scrollbar {
-  display: none;
-}
-.proGrid {
-  width: 83%;
-  border: 1px solid rgb(237, 237, 237);
-  padding: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  gap: 20px;
-}
-.proGrid > div {
-  width: 210px;
-  height: auto;
-}
-.pagination {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 3rem 0 3rem 0;
-}
-.pagination button {
-  border: 1px solid rgb(188, 185, 186);
-  font-size: 17px;
-  background-color: #fff;
-  padding: 10px 15px;
 }
 
-@media (max-width: 720px) {
-  .proSkeleton {
-    padding: 2rem;
-  }
-  .proContainer {
-    padding: 3.5rem 1.3rem 0.5rem 1.3rem;
-  }
-  .proCount {
-    display: none;
-  }
-  .proNavigation {
-    display: none;
-  }
-  .proFilters {
-    display: none;
-  }
-  .proSort {
-    display: none;
-  }
-  .proGrid {
-    width: 100%;
-    padding: 0;
-    gap: 0;
-  }
-  .proGrid > div {
-    width: 50%;
-  }
+.proSort > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-@media (max-width: 520px) {
-  .proContainer {
-    padding: 3rem 1.3rem 0.5rem 1.3rem;
-  }
+
+.proSort select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
 }
-@media (max-width: 320px) {
-  .proContainer {
-    padding: 2.5rem 1.3rem 0.5rem 1.3rem;
-  }
+
+/* Container for products */
+.proBox {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
+
+/* Grid for product items */
+.proGrid {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Individual product card */
+.proGrid > div {
+  width: calc(33.333% - 1rem);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+  text-align: center;
+}
+
+.proGrid img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.productName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0.5rem 0;
+}
+
+.productPrice {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
 .add-to-moodboard {
   background-color: #ff3f6c;
   color: white;
@@ -127,9 +115,55 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  margin-top: 10px;
+  margin: 10px 0;
+  transition: background-color 0.3s;
 }
 
 .add-to-moodboard:hover {
   background-color: #f75177;
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.pagination button {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 0 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.pagination button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .proGrid > div {
+    width: calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .proGrid > div {
+    width: 100%;
+  }
+
+  .proBox {
+    flex-direction: column;
+  }
+
+  .proSort {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

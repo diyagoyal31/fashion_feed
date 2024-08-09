@@ -1,5 +1,6 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import Navbar from "../Components/navbar/Navbar";
 import Footer from "../Components/footer/Footer";
 import Home from "../Pages/home/Home";
@@ -21,6 +22,7 @@ const AllRoutes = () => {
       <Navbar />
       <ImageProvider>
         <Routes>
+       
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<Home />} />
@@ -32,6 +34,7 @@ const AllRoutes = () => {
           <Route path="/product" element={<Product />} />
           <Route path="/product/:id" element={<SingleProduct />} />
           <Route path="/chat" element={<Chat />} />
+        
         </Routes>
       </ImageProvider>
       <Footer />

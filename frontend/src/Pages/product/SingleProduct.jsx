@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -10,49 +10,61 @@ import { RiStarSFill } from "react-icons/ri";
 import { BiHeart, BiDetail } from "react-icons/bi";
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 
-const SingleProduct = () => {
-  let { id } = useParams();
-  const [proQuantity, setQuantity] = useState(1);
-  const [product, setProduct] = useState({
-    brand: "Sample Brand",
-    title: "Sample Product",
-    rating: 4.5,
-    count: 123,
-    price: 1000,
-    off_price: 1200,
-    discount: 15,
-    stock: 10,
-    description: "This is a sample product description.",
-    color: "Red",
-    size: "M",
+// Dummy product data
+const allProducts = [
+  { 
+    id: 1, 
+    brand: "Sample Brand", 
+    title: "Sample Product", 
+    rating: 4.5, 
+    count: 123, 
+    price: 450, 
+    off_price: 1200, 
+    discount: 15, 
+    stock: 10, 
+    description: "This is a sample product description.", 
+    color: "Red", 
+    size: "M", 
     images: [
-      "/assets/sample1.jpg",
-      "/assets/sample2.jpg",
-      "/assets/sample3.jpg"
+      "../../.././assets/products/top1.jpg",
     ]
-  });
-  const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(product.images);
+  },
+  // Add more products if needed
+];
+
+const SingleProduct = () => {
+  const { id } = useParams();
+  const [proQuantity, setQuantity] = useState(1);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate a product fetch from dummy data
+    const fetchedProduct = allProducts.find(p => p.id === parseInt(id));
+    setProduct(fetchedProduct);
+    setLoading(false);
+  }, [id]);
 
   if (loading) {
-    return "Loading...";
+    return <p>Loading...</p>;
+  }
+
+  if (!product) {
+    return <p>Product not found</p>;
   }
 
   return (
     <div className="singleProComponent">
       <div className="singleProNavigation">
-        Home / {product.gender} /{" "}
-        <span>
-          {product.categories ? product.categories : product.category} /{" "}
-          {product.brand}
-        </span>
+        Home / {product.category || 'Products'} /{" "}
+        <span>{product.brand}</span>
       </div>
       <div className="singlePro">
         <div className="singleProGallery">
           <Swiper pagination={true} modules={[Pagination]} className="mySwiper">
-            {image.map((e, i) => (
-              <SwiperSlide className="swipeImage" key={i}>
-                <img src={e} alt="images" />
+            {product.images.map((image, index) => (
+              <SwiperSlide className="swipeImage" key={index}>
+                <img src={image} alt={`Product ${index + 1}`} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -62,49 +74,25 @@ const SingleProduct = () => {
             <h2>{product.brand}</h2>
             <h2>{product.title}</h2>
             <p>
-              <span> {product.rating} </span>
-              <RiStarSFill className="itemStars" /> | {product.count} Reviews
+              <span>{product.rating}</span>
+              <RiStarSFill className="itemStars" />
+              <span>({product.count} reviews)</span>
             </p>
-          </div>
-          <div className="singleItemDetails">
             <div>
-              Rs. {product.price} <s>Rs. {product.off_price}</s>
-              <span>({product.discount}% OFF)</span>
+              Rs. {product.price} <s>Rs. {product.off_price}</s> <span>({product.discount}% OFF)</span>
             </div>
-            <p>Inclusive of all taxes</p>
-            <h5 style={{ color: product.stock ? "#14958f" : "red" }}>
-              Status : {product.stock ? "InStock" : "Out Of Stock"}
-            </h5>
-          </div>
-          <div className="singleProQuantity">
-            <p>Select Quantity : {proQuantity}</p>
-            <Slider
-              defaultValue={1}
-              max={product.stock > 20 ? 20 : product.stock}
-              onChange={(e) => setQuantity(e)}
-            />
-          </div>
-          <div className="singleProButtons">
-            <button className="addToCart">
-              <HiOutlineShoppingBag className="singleProIcons" />
-              ADD TO BAG
-            </button>
-            <button className="addToList">
-              <BiHeart className="singleProIcons" />
-              WISHLIST
-            </button>
-          </div>
-          <div className="singleProDescription">
-            <h3>
-              PRODUCT DETAILS <BiDetail />
-            </h3>
             <p>{product.description}</p>
-            <h4>Color : {product.color}</h4>
-            {product.size ? <h4>{product.size}</h4> : null}
+          </div>
+          <div className="singleProActions">
+            <button className="add-to-cart">
+              <HiOutlineShoppingBag /> Add to Cart
+            </button>
+            <button className="add-to-wishlist">
+              <BiHeart /> Add to Wishlist
+            </button>
           </div>
         </div>
       </div>
-      <div className="singleProReviews"></div>
     </div>
   );
 };

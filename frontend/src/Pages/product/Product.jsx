@@ -1,109 +1,121 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Product.css";
-import { Select } from "antd";
-import ProComp from "../../Components/product/ProComp";
-import { Skeleton } from "antd";
 import { useLocation } from "react-router-dom";
+import MetaData from "../../Components/MetaData";
+
+// Dummy product data
+const allProducts = [
+  { id: 1, name: "Women Blue Top", price: 450, imageUrl: "../../.././assets/products/top1.jpg" },
+ 
+  
+  // Add more products here if needed
+];
+
+// Define products per page
+const PRODUCTS_PER_PAGE = 15;
 
 const Product = () => {
-  const search = useLocation().search;
-  const query = new URLSearchParams(search).get("gender");
-  const categories = new URLSearchParams(search).get("categories");
-  const keyword = new URLSearchParams(search).get("keyword");
-  const [prevQuery, setPrevQuery] = useState(query);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState({ products: [], productLength: 0, totalPage: 0 });
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const category = queryParams.get('gender') || queryParams.get('category');
 
-  useEffect(() => {
-    if (prevQuery !== query) {
-      setPage(1);
+  // State for pagination and sorting
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortOption, setSortOption] = useState('price-asc');
+
+  // Filter products based on category
+  const filteredProducts = category === 'women' || category === 'tops' ? allProducts : [];
+
+  // Sort products based on the selected option
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortOption) {
+      case 'price-asc':
+        return a.price - b.price;
+      case 'price-desc':
+        return b.price - a.price;
+      
+      default:
+        return 0;
     }
+  });
 
-    // Simulate fetch with static data
-    const fetchProducts = () => {
-      setLoading(true);
-      setTimeout(() => {
-        // Simulate loading time and data
-        setData({
-          products: [
-            // Add some static product data for demonstration
-            { id: 1, title: "Sample Product 1", price: 100, image: "/assets/sample1.jpg" },
-            { id: 2, title: "Sample Product 2", price: 150, image: "/assets/sample2.jpg" }
-          ],
-          productLength: 2,
-          totalPage: 1
-        });
-        setLoading(false);
-      }, 1000);
-    };
+  // Calculate total pages
+  const totalPages = Math.ceil(sortedProducts.length / PRODUCTS_PER_PAGE);
 
-    fetchProducts();
-    setPrevQuery(query);
-  }, [keyword, query, page, prevQuery, categories]);
+  // Get products for the current page
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const endIndex = startIndex + PRODUCTS_PER_PAGE;
+  const productsToDisplay = sortedProducts.slice(startIndex, endIndex);
 
-  const sortOptions = [
-    { label: "Better Discount", value: "discount" },
-    { label: "Customer Ratings", value: "rating" },
-    { label: "Price low to high", value: "asc" },
-    { label: "Price high to low", value: "desc" },
-  ];
+  // Handler for previous page
+  const handlePreviousPage = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+  };
+
+  // Handler for next page
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
+  };
+
+  // Handler for sort change
+  const handleSortChange = (event) => {
+    setSortOption(event.target.value);
+  };
 
   return (
     <div className="productCon">
+      <MetaData title={`${category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Products'} Page`} />
       <div className="proContainer">
-        <p className="proNavigation">
-          <span>Home /</span> {query}
-        </p>
-        <p className="proCount">
-          Products - <span>{data.productLength} items</span>
-        </p>
+        <div className="proNavigation">
+          <span>Home</span> &gt; <span>{category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Products'}</span>
+        </div>
+        <div className="proCount">
+          <span>Showing</span> {productsToDisplay.length} <span>Products</span>
+        </div>
         <div className="proSort">
           <div>
-            <Select
-              size="large"
-              placeholder="Sort By"
-              style={{
-                width: 200,
-                border: "1px solid gray",
-                color: "black",
-                borderRadius: "8px",
-                outline: "none",
-              }}
-              options={sortOptions}
-            />
+            <span>Sort by:</span>
+            <select value={sortOption} onChange={handleSortChange}>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              
+            </select>
           </div>
         </div>
-      </div>
-      <div className="proBox">
-        <div className="proFilters"></div>
-        {loading ? (
-          <div className="proGrid">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <div className="proSkeleton" key={i}>
-                <Skeleton active />
-              </div>
-            ))}
+        <div className="proBox">
+          <div className="proFilters">
+            {/* Add filter options here */}
           </div>
-        ) : (
           <div className="proGrid">
-            {data.products.map((pro, i) => (
-              <ProComp product={pro} key={i} />
-            ))}
+            {productsToDisplay.length > 0 ? (
+              productsToDisplay.map((product) => (
+                <div key={product.id}>
+                  <img src={product.imageUrl} alt={product.name} />
+                  <p className="productName">{product.name}</p>
+                  <p className="productPrice">Rs. {product.price.toFixed(2)}</p>
+                  <button className="add-to-moodboard">Add to Moodboard</button>
+                </div>
+              ))
+            ) : (
+              <p>No products available</p>
+            )}
           </div>
-        )}
-      </div>
-      <div className="pagination">
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-          Prev
-        </button>
-        <button>{page}</button>
-        <button
-          disabled={page === Math.ceil(data.totalPage) || data.products.length < 20}
-          onClick={() => setPage(page + 1)}
-        >
-          Next
-        </button>
+        </div>
+        <div className="pagination">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+          >
+            &lt; Previous
+          </button>
+          <span>Page {currentPage} of {totalPages}</span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next &gt;
+          </button>
+        </div>
       </div>
     </div>
   );
