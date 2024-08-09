@@ -1,246 +1,117 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
-const db = require('./db');
-const cors = require('cors');
-const app = express();
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const cors = require('cors');  // Import cors
+const db = require('./db');  // Import the db connection
 
-app.use(bodyParser.json());
-app.use(cors({
-  origin: 'http://localhost:3000' // Replace with your frontend URL
+const app = express();
+const port = 5000;
+
+// Middleware
+app.use(cors());  // Use cors middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: true,
 }));
 
-// Define the signup route
-app.post('/signup', async (req, res) => {
+// Signup route
+app.post('/api/signup', async (req, res) => {
   const { Name, Email, Password, Phone, Address, DateOfBirth, Gender } = req.body;
 
-  // Input validation (you can add more validations as needed)
-  if (!Name || !Email || !Password) {
-    return res.status(400).json({ message: 'Name, Email, and Password are required.' });
+  if (!Name || !Email || !Password || !Phone || !Address || !DateOfBirth || !Gender) {
+    return res.status(400).json({ message: 'All fields are required' });
   }
 
   try {
-    // Check if the user already exists
-    const [existingUser] = await db.query('SELECT Email FROM Users WHERE Email = ?', [Email]);
-    if (existingUser.length > 0) {
-      return res.status(400).json({ message: 'Email already in use.' });
-    }
+    // Check if the email already exists
+    db.query('SELECT * FROM Users WHERE Email = ?', [Email], async (err, results) => {
+      if (err) throw err;
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(Password, 10);
+      if (results.length > 0) {
+        return res.status(400).json({ message: 'Email already exists' });
+      }
 
-    // Insert the new user into the database
-    await db.query(
-      'INSERT INTO Users (Name, Email, Password, Phone, Address, DateOfBirth, Gender) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [Name, Email, hashedPassword, Phone, Address, DateOfBirth, Gender]
-    );
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(Password, 10);
 
-    res.status(201).json({ message: 'User registered successfully.' });
+      // Insert the user into the database
+      db.query(
+        'INSERT INTO Users (Name, Email, Password, Phone, Address, DateOfBirth, Gender) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [Name, Email, hashedPassword, Phone, Address, DateOfBirth, Gender],
+        (err, result) => {
+          if (err) throw err;
+
+          // Set session storage
+          req.session.user = {
+            id: result.insertId,
+            name: Name,
+            email: Email,
+          };
+
+          res.status(201).json({ message: 'User registered successfully', user: req.session.user });
+        }
+      );
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Login route
-app.post('/login', async (req, res) => {
+
+app.post('/api/login', (req, res) => {
   const { Email, Password } = req.body;
 
   if (!Email || !Password) {
-    return res.status(400).json({ message: 'Email and password are required.' });
+    return res.status(400).json({ message: 'Please fill in both fields.' });
   }
 
-  try {
-    const [results] = await db.query('SELECT * FROM Users WHERE Email = ?', [Email]);
+  // Query the user by email
+  db.query('SELECT * FROM Users WHERE Email = ?', [Email], async (err, results) => {
+    if (err) return res.status(500).json({ message: 'Database error' });
+
     if (results.length === 0) {
-      return res.status(401).json({ message: 'Invalid email or password.' });
+      return res.status(400).json({ message: 'Invalid email or password.' });
     }
 
     const user = results[0];
 
+    // Compare the entered password with the stored hashed password
     const isMatch = await bcrypt.compare(Password, user.Password);
+
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password.' });
+      return res.status(400).json({ message: 'Invalid email or password.' });
     }
 
-    res.json({ message: 'Login successful', userID: user.UserID });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
-// Middleware to verify token
-const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization'];
+    // Set session storage with additional user details
+    req.session.user = {
+      id: user.UserID,
+      name: user.Name,
+      email: user.Email,
+      phone: user.Phone,
+      address: user.Address,
+      dateOfBirth: user.DateOfBirth,
+      gender: user.Gender
+    };
 
-  if (!token) return res.sendStatus(403);
-
-  jwt.verify(token, 'your_jwt_secret', (err, user) => {
-      if (err) return res.sendStatus(403);
-      req.user = user;
-      next();
-  });
-};
-
-// Profile route to get user information
-app.get('/profile', authenticateToken, (req, res) => {
-  const userId = req.user.id;
-
-  const query = 'SELECT Name FROM Users WHERE UserID = ?';
-  db.query(query, [userId], (err, results) => {
-      if (err) throw err;
-
-      if (results.length > 0) {
-          const user = results[0];
-          res.json({ name: user.Name });
-      } else {
-          res.status(404).json({ message: 'User not found' });
-      }
+    res.status(200).json({ message: 'Login successful!', user: req.session.user });
   });
 });
 
-// Fetch user details route
-app.get('/user/:id', async (req, res) => {
-  const userID = req.params.id;
-
-  try {
-    const [results] = await db.query('SELECT * FROM Users WHERE UserID = ?', [userID]);
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'User not found.' });
+app.post('/api/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ message: 'Logout failed.' });
     }
-
-    res.json(results[0]);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
+    res.status(200).json({ message: 'Logout successful.' });
+  });
 });
 
-// Update user profile route
-app.put('/user/:id', async (req, res) => {
-  const userID = req.params.id;
-  const { Name, Phone, Address, DateOfBirth, Gender } = req.body;
 
-  const updatedUser = {
-    Name,
-    Phone,
-    Address,
-    DateOfBirth,
-    Gender,
-  };
-
-  try {
-    await db.query('UPDATE Users SET ? WHERE UserID = ?', [updatedUser, userID]);
-    res.json({ message: 'User profile updated successfully.' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
 
-// Fetch all categories
-app.get('/categories', async (req, res) => {
-  try {
-    const [results] = await db.query('SELECT * FROM Categories');
-    res.json(results);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
-
-// Add a new category
-app.post('/categories', async (req, res) => {
-  const { CategoryName, Description } = req.body;
-
-  const newCategory = {
-    CategoryName,
-    Description,
-  };
-
-  try {
-    const [result] = await db.query('INSERT INTO Categories SET ?', newCategory);
-    res.status(201).json({ message: 'Category added successfully', categoryID: result.insertId });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
-
-// Fetch all brands
-app.get('/brands', async (req, res) => {
-  try {
-    const [results] = await db.query('SELECT * FROM Brands');
-    res.json(results);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
-
-// Add a new brand
-app.post('/brands', async (req, res) => {
-  const { BrandName, Type } = req.body;
-
-  if (!BrandName || !Type) {
-    return res.status(400).json({ message: 'BrandName and Type are required.' });
-  }
-
-  const newBrand = {
-    BrandName,
-    Type,
-  };
-
-  try {
-    const [result] = await db.query('INSERT INTO Brands SET ?', newBrand);
-    res.status(201).json({ message: 'Brand added successfully', brandID: result.insertId });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
-
-// Fetch all products
-app.get('/products', async (req, res) => {
-  try {
-    const [results] = await db.query('SELECT * FROM Products');
-    res.json(results);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
-
-// Add a new product
-app.post('/products', async (req, res) => {
-  const { ProductName, CategoryID, BrandID, Price, Description, Size, StockQuantity, Image } = req.body;
-
-  if (!ProductName || !Price) {
-    return res.status(400).json({ message: 'Product name and price are required.' });
-  }
-
-  const newProduct = {
-    ProductName,
-    CategoryID,
-    BrandID,
-    Price,
-    Description,
-    Size,
-    StockQuantity,
-    Image,
-  };
-
-  try {
-    const [result] = await db.query('INSERT INTO Products SET ?', newProduct);
-    res.status(201).json({ message: 'Product added successfully', productID: result.insertId });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
-
-// Start the server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
